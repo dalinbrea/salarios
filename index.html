@@ -1,0 +1,819 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    
+    <!-- === SEO Y PREVISUALIZACIÓN (SOCIAL CARDS) === -->
+    <title>Dashboard Salarial SST 2025 | La Movida DAO</title>
+    <meta name="description" content="Reporte oficial de salarios y honorarios para profesionales de Seguridad y Salud en el Trabajo en Venezuela. Datos actualizados y análisis estadístico.">
+    
+    <!-- Open Graph / Facebook / WhatsApp -->
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://www.movidasst.com/">
+    <meta property="og:title" content="Dashboard Salarial SST 2025">
+    <meta property="og:description" content="¿Cuánto gana un profesional SST en Venezuela? Consulta la mediana salarial, tarifas por hora y tendencias de mercado en tiempo real.">
+    <meta property="og:image" content="https://assets.poap.xyz/ae80dd44-a4b8-4a90-9d76-2da198a1f6fc.png">
+
+    <!-- Twitter -->
+    <meta property="twitter:card" content="summary_large_image">
+    <meta property="twitter:title" content="Dashboard Salarial SST 2025">
+    <meta property="twitter:description" content="Análisis de mercado salarial para prevencionistas en Venezuela. Datos abiertos de La Movida SST DAO.">
+    <meta property="twitter:image" content="https://assets.poap.xyz/ae80dd44-a4b8-4a90-9d76-2da198a1f6fc.png">
+
+    <!-- === DEPENDENCIAS === -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels@2.0.0"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    
+    <!-- Fuentes -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
+    
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['"Plus Jakarta Sans"', 'sans-serif'],
+                        mono: ['"JetBrains Mono"', 'monospace'],
+                    },
+                    colors: {
+                        brand: {
+                            50: '#f0fdf4', 100: '#dcfce7', 200: '#bbf7d0', 300: '#86efac', 400: '#4ade80',
+                            500: '#00b050', // Verde DAO
+                            600: '#008f40', 700: '#15803d', 800: '#166534', 900: '#004d22',
+                        },
+                        slate: { 850: '#1e293b', 900: '#0f172a' }
+                    },
+                    boxShadow: {
+                        'glow': '0 0 15px rgba(0, 176, 80, 0.15)',
+                        'glow-hover': '0 0 20px rgba(0, 176, 80, 0.3)',
+                    }
+                }
+            }
+        }
+    </script>
+
+    <style>
+        body { background-color: #f8fafc; }
+        .glass { background: rgba(255, 255, 255, 0.95); backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px); }
+        .card-hover { transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1); }
+        .card-hover:hover { transform: translateY(-4px); box-shadow: 0 10px 25px -5px rgba(0, 176, 80, 0.1), 0 8px 10px -6px rgba(0, 176, 80, 0.1); border-color: #bbf7d0; }
+        ::-webkit-scrollbar { width: 8px; height: 8px; }
+        ::-webkit-scrollbar-track { background: #f1f1f1; }
+        ::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 4px; }
+        ::-webkit-scrollbar-thumb:hover { background: #00b050; }
+        @keyframes shimmer { 0% { background-position: -1000px 0; } 100% { background-position: 1000px 0; } }
+        .skeleton { animation: shimmer 2s infinite linear; background: linear-gradient(to right, #f1f5f9 4%, #e2e8f0 25%, #f1f5f9 36%); background-size: 1000px 100%; }
+    </style>
+</head>
+<body class="text-slate-800 antialiased min-h-screen flex flex-col font-sans">
+
+    <!-- BOTÓN VOLVER (Seguro y Estilizado) -->
+    <a href="https://www.movidasst.com" 
+       title="Volver al Hub Principal"
+       rel="noopener noreferrer"
+       style="position: fixed; bottom: 20px; right: 20px; background-color: #0f172a; color: #00b050; padding: 8px 16px; border-radius: 8px; text-decoration: none; font-family: 'JetBrains Mono', monospace; font-weight: 700; font-size: 12px; letter-spacing: 0.5px; border: 1px solid #00b050; box-shadow: 0 0 10px rgba(0, 176, 80, 0.2); z-index: 9999; display: flex; align-items: center; gap: 8px; transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1); backdrop-filter: blur(5px);"
+       onmouseover="this.style.transform='translateY(-2px)'; this.style.boxShadow='0 0 20px rgba(0, 176, 80, 0.5)'; this.style.backgroundColor='#00b050'; this.style.color='#ffffff';" 
+       onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='0 0 10px rgba(0, 176, 80, 0.2)'; this.style.backgroundColor='#0f172a'; this.style.color='#00b050';"
+    >
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"></path><polyline points="7.5 4.21 12 12 16.5 4.21"></polyline><polyline points="7.5 19.79 12 12 16.5 19.79"></polyline><polyline points="3.29 12 12 12 20.71 12"></polyline></svg>
+        <span>VOLVER</span>
+    </a>
+
+    <!-- Navegación -->
+    <nav class="bg-white/90 backdrop-blur-md sticky top-0 z-50 border-b-2 border-brand-500 shadow-sm">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex items-center justify-between h-24">
+                <div class="flex items-center gap-5">
+                    <div class="flex-shrink-0 bg-white p-2 rounded-xl border border-brand-100 shadow-glow">
+                        <img src="https://assets.poap.xyz/ae80dd44-a4b8-4a90-9d76-2da198a1f6fc.png" alt="La Movida SST DAO Network" class="h-16 w-auto object-contain hover:scale-105 transition-transform duration-300">
+                    </div>
+                    <div class="flex flex-col">
+                        <h1 class="font-bold text-xl md:text-2xl tracking-tight leading-tight text-slate-800">
+                            La Movida de <span class="text-brand-500">SST DAO</span> Network
+                        </h1>
+                        <div class="flex items-center gap-2 mt-1">
+                            <span class="w-2 h-2 rounded-full bg-brand-500 animate-pulse shadow-glow"></span>
+                            <p class="text-xs md:text-sm text-slate-500 font-mono tracking-wide">Salarios y Honorarios Vzla 2025</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Contenido Principal -->
+    <main id="dashboard-content" class="flex-grow max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 w-full">
+
+        <!-- Barra de Filtros -->
+        <div class="glass sticky top-28 z-40 rounded-2xl shadow-sm border border-brand-100 p-1 mb-8 bg-white/80">
+            <div class="flex flex-col md:flex-row gap-2 p-3">
+                <div class="flex-1 min-w-[200px]">
+                    <label class="block text-[10px] font-bold text-brand-600 font-mono uppercase tracking-wider mb-1 px-1">Cargo</label>
+                    <div class="relative group">
+                        <div class="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none text-brand-400 group-focus-within:text-brand-600 transition-colors"><i class="fa-solid fa-briefcase"></i></div>
+                        <select id="filterCargo" class="w-full bg-slate-50 border border-slate-200 text-slate-700 text-sm rounded-xl focus:ring-2 focus:ring-brand-500/20 focus:border-brand-500 block pl-10 p-2.5 transition-all outline-none appearance-none cursor-pointer hover:bg-white hover:border-brand-300">
+                            <option value="all">Todos los cargos</option>
+                        </select>
+                        <div class="absolute inset-y-0 right-0 flex items-center pr-3 pointer-events-none text-slate-400"><i class="fa-solid fa-chevron-down text-xs"></i></div>
+                    </div>
+                </div>
+                <div class="flex-1 min-w-[200px]">
+                    <label class="block text-[10px] font-bold text-brand-600 font-mono uppercase tracking-wider mb-1 px-1">Estado / Ubicación</label>
+                    <div class="relative group">
+                        <div class="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none text-brand-400 group-focus-within:text-brand-600 transition-colors"><i class="fa-solid fa-location-dot"></i></div>
+                        <select id="filterEstado" class="w-full bg-slate-50 border border-slate-200 text-slate-700 text-sm rounded-xl focus:ring-2 focus:ring-brand-500/20 focus:border-brand-500 block pl-10 p-2.5 transition-all outline-none appearance-none cursor-pointer hover:bg-white hover:border-brand-300">
+                            <option value="all">Todas las ubicaciones</option>
+                        </select>
+                        <div class="absolute inset-y-0 right-0 flex items-center pr-3 pointer-events-none text-slate-400"><i class="fa-solid fa-chevron-down text-xs"></i></div>
+                    </div>
+                </div>
+                <div class="flex items-end">
+                    <button onclick="resetFilters()" class="w-full md:w-auto h-[42px] px-6 text-sm font-bold font-mono text-brand-600 bg-brand-50 hover:bg-brand-100 border border-brand-200 rounded-xl transition-all active:scale-95 flex items-center justify-center gap-2">
+                        <i class="fa-solid fa-filter-circle-xmark"></i> <span class="hidden md:inline">Limpiar</span>
+                    </button>
+                </div>
+            </div>
+            <div id="activeFilters" class="hidden px-4 pb-3 flex gap-2 text-xs">
+                <span class="bg-brand-50 text-brand-700 px-2 py-1 rounded border border-brand-200 flex items-center gap-1 font-mono font-bold">Filtros activos <i class="fa-solid fa-check text-brand-500"></i></span>
+            </div>
+        </div>
+
+        <!-- Skeleton Loader -->
+        <div id="skeletonLoader" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+            <div class="bg-white rounded-2xl p-6 shadow-sm border border-slate-100 h-32 skeleton"></div>
+            <div class="bg-white rounded-2xl p-6 shadow-sm border border-slate-100 h-32 skeleton"></div>
+            <div class="bg-white rounded-2xl p-6 shadow-sm border border-slate-100 h-32 skeleton"></div>
+            <div class="bg-white rounded-2xl p-6 shadow-sm border border-slate-100 h-32 skeleton"></div>
+        </div>
+
+        <!-- Dashboard Grid -->
+        <div id="dashboard" class="hidden animate-fade-in space-y-8">
+            
+            <!-- NOTA METODOLÓGICA -->
+            <div class="mb-6 bg-blue-50 border-l-4 border-blue-500 p-4 rounded-r-xl shadow-sm flex items-start gap-3">
+                <div class="text-blue-500 mt-1"><i class="fa-solid fa-circle-info"></i></div>
+                <div class="text-sm text-slate-700">
+                    <h4 class="font-bold text-slate-800 mb-1">Nota Metodológica</h4>
+                    <p class="leading-relaxed text-xs md:text-sm">
+                        La presente encuesta recoge la respuesta de profesionales de Seguridad y Salud en el Trabajo (SST) de todo el territorio nacional. Los montos reflejan el <strong>ingreso mensual percibido total</strong> (sin discriminar si es salario base o compuesto por bonificaciones) y se expresan en <strong>Dólares Americanos (USD)</strong> como moneda de referencia estándar para el análisis.
+                    </p>
+                </div>
+            </div>
+
+            <!-- INSIGHTS INTELIGENTES -->
+            <div id="insightsContainer" class="bg-gradient-to-r from-brand-900 to-slate-900 rounded-2xl p-6 text-white shadow-lg relative overflow-hidden hidden">
+                <div class="absolute top-0 right-0 p-4 opacity-10"><i class="fa-solid fa-lightbulb text-6xl"></i></div>
+                <h3 class="font-bold text-brand-400 mb-3 flex items-center gap-2 font-mono uppercase text-sm tracking-wider"><i class="fa-solid fa-bolt"></i> Hallazgos Clave</h3>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm" id="insightsContent">
+                    <!-- Contenido dinámico -->
+                </div>
+            </div>
+
+            <!-- KPIs Row -->
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+                <div class="bg-white rounded-2xl p-5 shadow-sm border border-slate-100 card-hover group relative overflow-hidden">
+                    <div class="absolute top-0 right-0 p-4 opacity-10 group-hover:opacity-20 transition-opacity"><i class="fa-solid fa-users text-4xl text-brand-500"></i></div>
+                    <p class="text-xs font-bold text-slate-400 uppercase tracking-wider mb-1 font-mono">Muestra Total</p>
+                    <div class="flex items-baseline gap-2"><h3 class="text-3xl font-bold text-slate-800" id="kpiCount">0</h3></div>
+                    <div class="w-full bg-slate-100 h-1 mt-4 rounded-full overflow-hidden"><div class="bg-brand-500 h-full rounded-full shadow-glow" style="width: 100%"></div></div>
+                </div>
+                <div class="bg-white rounded-2xl p-5 shadow-sm border-l-4 border-brand-500 card-hover group relative overflow-hidden">
+                    <div class="absolute top-0 right-0 p-4 opacity-10 group-hover:opacity-20 transition-opacity"><i class="fa-solid fa-money-bill-wave text-4xl text-brand-600"></i></div>
+                    <div class="flex items-center gap-2 mb-1"><p class="text-xs font-bold text-brand-600 uppercase tracking-wider font-mono">Salario (Mediana)</p></div>
+                    <div class="flex items-baseline gap-2"><h3 class="text-3xl font-bold text-slate-800" id="kpiSalary">$0</h3><span class="text-xs text-slate-400 font-medium">Mensual</span></div>
+                     <div class="w-full bg-slate-100 h-1 mt-4 rounded-full overflow-hidden"><div class="bg-brand-500 h-full rounded-full shadow-glow" style="width: 75%"></div></div>
+                </div>
+                <div class="bg-white rounded-2xl p-5 shadow-sm border border-slate-100 card-hover group relative overflow-hidden">
+                    <div class="absolute top-0 right-0 p-4 opacity-10 group-hover:opacity-20 transition-opacity"><i class="fa-solid fa-briefcase text-4xl text-slate-400"></i></div>
+                    <p class="text-xs font-bold text-slate-400 uppercase tracking-wider mb-1 font-mono">Hora Asesoría</p>
+                    <div class="flex items-baseline gap-2"><h3 class="text-3xl font-bold text-slate-800" id="kpiAdvisory">$0</h3><span class="text-xs text-slate-400 font-medium">Promedio</span></div>
+                     <div class="w-full bg-slate-100 h-1 mt-4 rounded-full overflow-hidden"><div class="bg-slate-400 h-full rounded-full" style="width: 45%"></div></div>
+                </div>
+                <div class="bg-white rounded-2xl p-5 shadow-sm border border-slate-100 card-hover group relative overflow-hidden">
+                    <div class="absolute top-0 right-0 p-4 opacity-10 group-hover:opacity-20 transition-opacity"><i class="fa-solid fa-chalkboard-user text-4xl text-slate-400"></i></div>
+                    <p class="text-xs font-bold text-slate-400 uppercase tracking-wider mb-1 font-mono">Hora Capacitación</p>
+                    <div class="flex items-baseline gap-2"><h3 class="text-3xl font-bold text-slate-800" id="kpiTraining">$0</h3><span class="text-xs text-slate-400 font-medium">Promedio</span></div>
+                     <div class="w-full bg-slate-100 h-1 mt-4 rounded-full overflow-hidden"><div class="bg-slate-400 h-full rounded-full" style="width: 60%"></div></div>
+                </div>
+            </div>
+
+            <!-- Tendencias Centrales -->
+            <div class="bg-white rounded-2xl p-6 shadow-sm border border-slate-100 relative overflow-hidden">
+                <div class="absolute top-0 right-0 w-32 h-32 bg-brand-500/5 rounded-full blur-3xl -mr-10 -mt-10"></div>
+                <h3 class="font-bold text-slate-800 text-lg mb-4 flex items-center gap-2"><i class="fa-solid fa-scale-balanced text-brand-500"></i> Medidas de Tendencia Central</h3>
+                <p class="text-xs text-slate-500 mb-6 -mt-2">Tres formas diferentes de entender el "salario promedio" del mercado.</p>
+                
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                    <div class="bg-brand-50 p-5 rounded-xl border border-brand-100 relative overflow-hidden hover:shadow-glow transition-shadow group">
+                        <div class="absolute top-0 right-0 bg-brand-500 text-white text-[10px] px-2 py-0.5 rounded-bl-lg font-bold font-mono tracking-wide shadow-sm">MÁS REALISTA</div>
+                        <div class="flex items-center gap-3 mb-2"><div class="p-2 bg-white rounded-lg text-brand-600 border border-brand-100 shadow-sm"><i class="fa-solid fa-grip-lines"></i></div><h4 class="font-bold text-slate-700 font-mono">1. La Mediana</h4></div>
+                        <div class="text-2xl font-bold text-brand-700 mb-2 group-hover:scale-105 transition-transform origin-left" id="statMedian">$0</div>
+                        <div class="text-xs text-slate-600 leading-relaxed"><p class="mb-1 font-bold text-brand-800">"El centro exacto"</p>Si ordenamos a todos de menor a mayor salario, este es el valor que queda justo en el medio. <span class="block mt-1.5 text-slate-500 italic border-t border-brand-200 pt-1">Úsala para negociar: el 50% de tus colegas gana más que esto y el 50% menos.</span></div>
+                    </div>
+                    <div class="bg-slate-50 p-5 rounded-xl border border-slate-100 hover:shadow-md transition-shadow">
+                        <div class="flex items-center gap-3 mb-2"><div class="p-2 bg-white rounded-lg text-slate-500 border border-slate-200"><i class="fa-solid fa-calculator"></i></div><h4 class="font-bold text-slate-700 font-mono">2. Promedio</h4></div>
+                        <div class="text-2xl font-bold text-slate-700 mb-2" id="statMean">$0</div>
+                        <div class="text-xs text-slate-500 leading-relaxed"><p class="mb-1 font-bold text-slate-700">"La cuenta matemática"</p>Es la suma de todos los salarios dividida entre el número de personas. <span class="block mt-1.5 text-slate-400 italic border-t border-slate-200 pt-1">Cuidado: Unos pocos sueldos gerenciales muy altos pueden "inflar" este número.</span></div>
+                    </div>
+                    <div class="bg-slate-50 p-5 rounded-xl border border-slate-100 hover:shadow-md transition-shadow">
+                        <div class="flex items-center gap-3 mb-2"><div class="p-2 bg-white rounded-lg text-slate-500 border border-slate-200"><i class="fa-solid fa-layer-group"></i></div><h4 class="font-bold text-slate-700 font-mono">3. La Moda</h4></div>
+                        <div class="text-2xl font-bold text-slate-700 mb-2" id="statMode">$0</div>
+                        <div class="text-xs text-slate-500 leading-relaxed"><p class="mb-1 font-bold text-slate-700">"Lo más popular"</p>Es la cifra de salario que más se repite idénticamente en las encuestas. <span class="block mt-1.5 text-slate-400 italic border-t border-slate-200 pt-1">Representa el salario estándar que es más probable encontrar en una oferta laboral típica.</span></div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- SECCIÓN NUEVA: Análisis Corporativo -->
+            <div id="corporateAnalysis" class="bg-white rounded-2xl p-6 shadow-sm border border-slate-100">
+                <div class="flex justify-between items-center mb-6">
+                    <div>
+                        <h3 class="font-bold text-slate-800 text-lg flex items-center gap-2"><i class="fa-solid fa-building-columns text-brand-500"></i> Entorno Corporativo</h3>
+                        <p class="text-xs text-slate-400 font-mono">Impacto del tipo y tamaño de empresa en el salario</p>
+                    </div>
+                </div>
+                <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+                    <!-- Gráfico Tipo Empresa (HORIZONTAL Y ORDENADO) -->
+                    <div class="relative h-[300px] w-full">
+                        <h4 class="text-xs font-bold text-slate-500 uppercase tracking-wider mb-2 text-center">Salario por Tipo de Empresa</h4>
+                        <canvas id="chartType"></canvas>
+                    </div>
+                    <!-- Gráfico Tamaño Empresa -->
+                    <div class="relative h-[300px] w-full">
+                        <h4 class="text-xs font-bold text-slate-500 uppercase tracking-wider mb-2 text-center">Salario por Tamaño de Empresa</h4>
+                        <canvas id="chartSize"></canvas>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Rango y Estabilidad -->
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div class="bg-white rounded-2xl p-6 shadow-sm border border-slate-100 relative overflow-hidden">
+                    <h3 class="font-bold text-slate-800 text-lg mb-4 flex items-center gap-2"><i class="fa-solid fa-left-right text-brand-500"></i> Rango Normal de Mercado</h3>
+                    <div class="flex items-center justify-between bg-slate-50 rounded-xl p-4 border border-slate-200 mb-4">
+                        <div class="text-center"><p class="text-[10px] text-slate-400 uppercase font-bold tracking-wider">Mínimo (P25)</p><p class="text-xl font-bold text-slate-700" id="statP25">$0</p></div>
+                        <div class="h-8 w-px bg-slate-300"></div>
+                        <div class="text-center"><p class="text-[10px] text-brand-500 uppercase font-bold tracking-wider">Máximo (P75)</p><p class="text-xl font-bold text-brand-700" id="statP75">$0</p></div>
+                    </div>
+                    <p class="text-xs text-slate-500 leading-relaxed">El 50% de los profesionales ganan dentro de este rango estándar. Ganar menos del mínimo indica estar por debajo del mercado.</p>
+                </div>
+                <div class="bg-white rounded-2xl p-6 shadow-sm border border-slate-100 relative overflow-hidden">
+                    <div class="flex justify-between items-start mb-4">
+                        <h3 class="font-bold text-slate-800 text-lg flex items-center gap-2"><i class="fa-solid fa-chart-line text-brand-500"></i> Estabilidad Salarial</h3>
+                        <div class="bg-slate-100 rounded-full p-1.5 text-slate-400 hover:text-brand-500 transition-colors group relative">
+                            <i class="fa-solid fa-circle-question cursor-help"></i>
+                            <div class="absolute bottom-full right-0 mb-2 w-48 bg-slate-800 text-white text-[10px] p-2 rounded shadow-lg hidden group-hover:block z-10">Mide qué tanto varían los sueldos en este cargo/zona.</div>
+                        </div>
+                    </div>
+                    <div class="flex items-center gap-4 mb-4">
+                        <div id="cvBadge" class="px-4 py-2 rounded-lg bg-slate-100 text-slate-600 font-bold text-sm border border-slate-200 uppercase tracking-wide">Calculando...</div>
+                        <div class="flex-1"><p class="text-[10px] text-slate-400 uppercase tracking-wider font-bold mb-1">Volatilidad (Coef. Variación)</p><div class="w-full bg-slate-200 rounded-full h-2"><div id="cvBar" class="bg-slate-400 h-2 rounded-full" style="width: 0%"></div></div><p class="text-right text-[10px] text-slate-400 font-mono mt-1" id="statCV">0%</p></div>
+                    </div>
+                    <p class="text-xs text-slate-500 leading-relaxed" id="cvText">Analizando dispersión...</p>
+                </div>
+            </div>
+
+            <!-- GRÁFICOS -->
+            <div id="chartsContainer" class="space-y-6">
+                <!-- Fila 1: Bandas Salariales y Distribución -->
+                <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                    <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-100">
+                        <div class="flex justify-between items-center mb-6">
+                            <div>
+                                <h3 class="font-bold text-slate-800 text-lg flex items-center gap-2"><i class="fa-solid fa-layer-group text-brand-500"></i> Bandas Salariales por Cargo</h3>
+                                <p class="text-xs text-slate-400 font-mono">Rango P25 a P75 (Lo normal)</p>
+                            </div>
+                        </div>
+                        <div class="relative h-[400px] w-full">
+                            <canvas id="chartRoles"></canvas>
+                        </div>
+                    </div>
+
+                    <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-100">
+                        <div class="flex justify-between items-center mb-6">
+                            <div>
+                                <h3 class="font-bold text-slate-800 text-lg flex items-center gap-2"><i class="fa-solid fa-chart-simple text-brand-500"></i> Distribución de Salarios</h3>
+                                <p class="text-xs text-slate-400 font-mono">¿Dónde se concentra la mayoría?</p>
+                            </div>
+                        </div>
+                        <div class="relative h-[400px] w-full">
+                            <canvas id="chartDistribution"></canvas>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Fila 2: Mapa de Calor y Género -->
+                <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                    <div class="lg:col-span-2 bg-white p-6 rounded-2xl shadow-sm border border-slate-100">
+                        <h3 class="font-bold text-slate-800 text-lg flex items-center gap-2 mb-4"><i class="fa-solid fa-map-location-dot text-brand-500"></i> Mapa de Calor: Ubicaciones</h3>
+                        <div class="relative h-[300px] w-full overflow-y-auto pr-2" id="heatmapContainer">
+                            <!-- Se llena dinámicamente con JS -->
+                        </div>
+                    </div>
+
+                    <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-100 flex flex-col">
+                        <div class="mb-4">
+                            <h3 class="font-bold text-slate-800 text-lg flex items-center gap-2"><i class="fa-solid fa-venus-mars text-brand-500"></i> Género</h3>
+                        </div>
+                        <div class="relative flex-grow flex items-center justify-center min-h-[250px]">
+                            <canvas id="chartGender"></canvas>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-white border-t border-slate-200 mt-auto">
+        <div class="max-w-7xl mx-auto px-4 py-6 flex flex-col md:flex-row justify-between items-center gap-4 text-xs text-slate-500">
+            <div class="flex items-center gap-2">
+                <span class="w-2 h-2 rounded-full bg-brand-500"></span>
+                <span class="font-bold text-slate-700 font-mono">La Movida SST DAO</span> © 2025
+            </div>
+            <div class="flex gap-4">
+                <span id="dataSourceStatus" class="flex items-center gap-1.5 font-mono">
+                    <span class="w-2 h-2 rounded-full bg-slate-300"></span> Conectando...
+                </span>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Notificación Flotante -->
+    <div id="toast" class="fixed bottom-5 right-5 transform translate-y-20 opacity-0 transition-all duration-300 z-50 bg-slate-900 text-white px-4 py-3 rounded-lg shadow-lg shadow-brand-500/20 border border-brand-500/30 flex items-center gap-3 font-mono">
+        <i id="toastIcon" class="fa-solid fa-circle-check text-brand-500"></i>
+        <span id="toastMsg" class="text-xs font-bold">Mensaje</span>
+    </div>
+
+    <!-- Error State -->
+    <div id="errorState" class="hidden flex flex-col items-center justify-center py-16 bg-red-50 rounded-3xl border border-red-200 text-center p-6 mx-auto max-w-2xl mt-10">
+        <div class="bg-white p-4 rounded-full mb-4 shadow-sm"><i class="fa-solid fa-triangle-exclamation text-red-500 text-3xl"></i></div>
+        <h3 class="text-xl font-bold text-slate-800 mb-2">Error de Conexión</h3>
+        <p class="text-slate-600 text-sm max-w-md mx-auto mb-6">No se pudieron cargar los datos de la DAO.</p>
+        <div class="flex gap-4">
+            <button onclick="fetchData()" class="px-6 py-2 bg-white border border-slate-300 text-slate-700 font-bold rounded-lg hover:bg-slate-50 transition-colors shadow-sm"><i class="fa-solid fa-rotate-right mr-2"></i> Reintentar</button>
+            <button onclick="loadMockDataManually()" class="px-6 py-2 bg-red-600 text-white font-bold rounded-lg hover:bg-red-700 transition-colors shadow-lg shadow-red-200">Ver Demo</button>
+        </div>
+    </div>
+
+    <!-- Empty State -->
+    <div id="noData" class="hidden flex flex-col items-center justify-center py-20 bg-white rounded-3xl border border-dashed border-slate-300 mx-auto max-w-2xl mt-10">
+        <div class="bg-brand-50 p-4 rounded-full mb-4"><i class="fa-solid fa-filter text-brand-400 text-2xl"></i></div>
+        <h3 class="text-lg font-bold text-slate-700">Sin resultados</h3>
+        <button onclick="resetFilters()" class="mt-4 text-brand-600 text-sm font-bold hover:underline">Limpiar filtros</button>
+    </div>
+
+    <script>
+        const GOOGLE_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbxZIHzf0axMDvl2DY3eKZNGXmGgvASbluOq5jOEs-c16WB0fjDfG9VK0PMSFQWWr8Qo/exec";
+        
+        let rawData = [];
+        let filteredData = [];
+        let charts = {};
+        
+        function generateMockData() {
+            const cargos = ["Coordinador SST", "Gerente SST", "Analista SST", "Consultor Externo", "Auditor ISO", "Inspector de Seguridad", "Médico Ocupacional", "Jefe HSEQ"];
+            const estados = ["Caracas", "Miranda", "Zulia", "Carabobo", "Aragua", "Lara", "Anzoátegui", "Bolívar"]; 
+            const empresas = ["Pequeña (1-50)", "Mediana (51-200)", "Grande (>200)"];
+            const tiposEmpresa = ["Privada Nacional", "Privada Multinacional", "Pública", "Independiente"];
+            const generos = ["Masculino", "Femenino", "Prefiero no decir"];
+            let data = [];
+            for(let i=0; i<150; i++) {
+                const cargo = cargos[Math.floor(Math.random() * cargos.length)];
+                let baseSalario = 1500;
+                if(cargo.includes("Gerente")) baseSalario = 4000;
+                if(cargo.includes("Jefe")) baseSalario = 3000;
+                if(cargo.includes("Inspector")) baseSalario = 1000;
+                let randomFactor = (Math.random() * 0.4) + 0.8; 
+                let finalSalary = Math.floor(baseSalario * randomFactor);
+
+                data.push({
+                    cargo: cargo,
+                    estado: estados[Math.floor(Math.random() * estados.length)],
+                    tamanoEmpresa: empresas[Math.floor(Math.random() * empresas.length)],
+                    tipoEmpresa: tiposEmpresa[Math.floor(Math.random() * tiposEmpresa.length)],
+                    genero: generos[Math.random() > 0.6 ? 0 : 1], 
+                    salario: finalSalary,
+                    honorarioAsesoria: Math.floor(30 + Math.random() * 100),
+                    honorarioCapacitacion: Math.floor(50 + Math.random() * 150)
+                });
+            }
+            return data;
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            Chart.register(ChartDataLabels);
+            Chart.defaults.font.family = "'Plus Jakarta Sans', sans-serif";
+            Chart.defaults.color = '#64748b';
+            Chart.defaults.scale.grid.color = '#f1f5f9';
+            Chart.defaults.plugins.tooltip.backgroundColor = '#0f172a';
+            Chart.defaults.plugins.tooltip.titleFont = { family: "'JetBrains Mono'", size: 13 };
+            Chart.defaults.plugins.tooltip.bodyFont = { family: "'Plus Jakarta Sans'", size: 12 };
+            Chart.defaults.plugins.tooltip.padding = 12;
+            Chart.defaults.plugins.tooltip.cornerRadius = 8;
+            Chart.defaults.plugins.tooltip.borderColor = '#00b050';
+            Chart.defaults.plugins.tooltip.borderWidth = 1;
+            fetchData();
+        });
+
+        async function fetchData() {
+            const statusEl = document.getElementById('dataSourceStatus');
+            document.getElementById('errorState').classList.add('hidden');
+            document.getElementById('skeletonLoader').classList.remove('hidden');
+            document.getElementById('dashboard').classList.add('hidden');
+
+            try {
+                const controller = new AbortController();
+                const timeoutId = setTimeout(() => controller.abort(), 15000);
+                const response = await fetch(GOOGLE_SCRIPT_URL, { signal: controller.signal });
+                clearTimeout(timeoutId);
+                if (!response.ok) throw new Error('Error HTTP: ' + response.status);
+                const data = await response.json();
+                if(!Array.isArray(data) || data.length === 0) throw new Error("Datos vacíos");
+                rawData = data;
+                statusEl.innerHTML = '<span class="w-2 h-2 rounded-full bg-brand-500 shadow-glow"></span> En línea';
+                showToast("Conexión DAO Establecida", "success");
+                initializeDashboard();
+            } catch (error) {
+                console.error("Fallo:", error);
+                document.getElementById('skeletonLoader').classList.add('hidden');
+                document.getElementById('errorState').classList.remove('hidden');
+                statusEl.innerHTML = '<span class="w-2 h-2 rounded-full bg-red-500"></span> Error';
+                showToast("Fallo de Conexión", "warning");
+            }
+        }
+
+        function loadMockDataManually() {
+            document.getElementById('errorState').classList.add('hidden');
+            rawData = generateMockData();
+            document.getElementById('dataSourceStatus').innerHTML = '<span class="w-2 h-2 rounded-full bg-amber-500"></span> Modo Demo';
+            showToast("Modo Demo Activado", "info");
+            initializeDashboard();
+        }
+
+        function initializeDashboard() {
+            populateFilters();
+            document.getElementById('filterCargo').addEventListener('change', updateDashboard);
+            document.getElementById('filterEstado').addEventListener('change', updateDashboard);
+            updateDashboard();
+            setTimeout(() => {
+                document.getElementById('skeletonLoader').classList.add('hidden');
+                document.getElementById('dashboard').classList.remove('hidden');
+            }, 500);
+        }
+
+        function populateFilters() {
+            const cargos = [...new Set(rawData.map(d => d.cargo).filter(Boolean))].sort();
+            const estados = [...new Set(rawData.map(d => d.estado).filter(Boolean))].sort();
+            const selCargo = document.getElementById('filterCargo');
+            const selEstado = document.getElementById('filterEstado');
+            while (selCargo.options.length > 1) selCargo.remove(1);
+            while (selEstado.options.length > 1) selEstado.remove(1);
+            cargos.forEach(c => selCargo.add(new Option(c, c)));
+            estados.forEach(e => selEstado.add(new Option(e, e)));
+        }
+
+        function resetFilters() {
+            document.getElementById('filterCargo').value = 'all';
+            document.getElementById('filterEstado').value = 'all';
+            updateDashboard();
+            showToast("Filtros restablecidos", "info");
+        }
+
+        function updateDashboard() {
+            const fCargo = document.getElementById('filterCargo').value;
+            const fEstado = document.getElementById('filterEstado').value;
+            filteredData = rawData.filter(d => {
+                const matchCargo = fCargo === 'all' || d.cargo === fCargo;
+                const matchEstado = fEstado === 'all' || d.estado === fEstado;
+                return matchCargo && matchEstado;
+            });
+
+            const noDataEl = document.getElementById('noData');
+            const chartsContainer = document.getElementById('chartsContainer');
+            const insightsContainer = document.getElementById('insightsContainer');
+            const activeFiltersEl = document.getElementById('activeFilters');
+
+            if (filteredData.length === 0) {
+                noDataEl.classList.remove('hidden');
+                chartsContainer.classList.add('hidden');
+                insightsContainer.classList.add('hidden');
+                updateKPIs([]);
+            } else {
+                noDataEl.classList.add('hidden');
+                chartsContainer.classList.remove('hidden');
+                insightsContainer.classList.remove('hidden');
+                updateKPIs(filteredData);
+                updateCharts(filteredData);
+                generateInsights(filteredData);
+            }
+
+            if (fCargo !== 'all' || fEstado !== 'all') {
+                activeFiltersEl.classList.remove('hidden');
+                activeFiltersEl.innerHTML = '';
+                if(fCargo !== 'all') activeFiltersEl.innerHTML += `<span class="bg-brand-50 text-brand-700 px-2 py-1 rounded border border-brand-200 font-mono text-[10px] uppercase font-bold">${fCargo}</span>`;
+                if(fEstado !== 'all') activeFiltersEl.innerHTML += `<span class="bg-brand-50 text-brand-700 px-2 py-1 rounded border border-brand-200 font-mono text-[10px] uppercase font-bold">${fEstado}</span>`;
+            } else {
+                activeFiltersEl.classList.add('hidden');
+            }
+        }
+
+        // --- FUNCIONES MATEMÁTICAS ---
+        function calculateMedian(arr) {
+            if (arr.length === 0) return 0;
+            const sorted = [...arr].sort((a, b) => a - b);
+            const mid = Math.floor(sorted.length / 2);
+            return sorted.length % 2 !== 0 ? sorted[mid] : (sorted[mid - 1] + sorted[mid]) / 2;
+        }
+        function calculateMode(arr) {
+            if (arr.length === 0) return 0;
+            const frequency = {};
+            let maxFreq = 0;
+            let modes = [];
+            arr.forEach(val => {
+                frequency[val] = (frequency[val] || 0) + 1;
+                if (frequency[val] > maxFreq) maxFreq = frequency[val];
+            });
+            for (const val in frequency) {
+                if (frequency[val] === maxFreq) modes.push(parseFloat(val));
+            }
+            return modes.length > 0 ? modes[0] : 0;
+        }
+        function calculatePercentile(arr, p) {
+            if (arr.length === 0) return 0;
+            const sorted = [...arr].sort((a, b) => a - b);
+            const index = (p / 100) * (sorted.length - 1);
+            const lower = Math.floor(index);
+            const upper = Math.ceil(index);
+            const weight = index - lower;
+            if (upper >= sorted.length) return sorted[lower];
+            return sorted[lower] * (1 - weight) + sorted[upper] * weight;
+        }
+        function calculateStandardDeviation(arr) {
+            if (arr.length <= 1) return 0;
+            const mean = arr.reduce((a, b) => a + b, 0) / arr.length;
+            const variance = arr.reduce((a, b) => a + Math.pow(b - mean, 2), 0) / (arr.length - 1);
+            return Math.sqrt(variance);
+        }
+
+        // --- KPIs ---
+        function updateKPIs(data) {
+            const count = data.length;
+            const salarios = data.map(d => d.salario).filter(v => v > 0);
+            const asesoria = data.map(d => d.honorarioAsesoria).filter(v => v > 0);
+            const capacitacion = data.map(d => d.honorarioCapacitacion).filter(v => v > 0);
+            const avg = arr => arr.length ? arr.reduce((a, b) => a + b, 0) / arr.length : 0;
+            const medianSalary = calculateMedian(salarios);
+            const meanSalary = avg(salarios);
+            const modeSalary = calculateMode(salarios);
+            const p25 = calculatePercentile(salarios, 25);
+            const p75 = calculatePercentile(salarios, 75);
+            const stdDev = calculateStandardDeviation(salarios);
+            const cv = meanSalary ? (stdDev / meanSalary) * 100 : 0;
+
+            animateValue("kpiCount", parseInt(document.getElementById("kpiCount").innerText.replace(/,/g, '') || 0), count, 800);
+            document.getElementById('kpiSalary').innerText = formatMoney(medianSalary);
+            document.getElementById('kpiAdvisory').innerText = formatMoney(avg(asesoria));
+            document.getElementById('kpiTraining').innerText = formatMoney(avg(capacitacion));
+            document.getElementById('statMedian').innerText = formatMoney(medianSalary);
+            document.getElementById('statMean').innerText = formatMoney(meanSalary);
+            document.getElementById('statMode').innerText = formatMoney(modeSalary);
+            document.getElementById('statP25').innerText = formatMoney(p25);
+            document.getElementById('statP75').innerText = formatMoney(p75);
+            
+            const cvEl = document.getElementById('statCV');
+            const cvBar = document.getElementById('cvBar');
+            const cvBadge = document.getElementById('cvBadge');
+            const cvText = document.getElementById('cvText');
+            cvEl.innerText = cv.toFixed(1) + '%';
+            cvBar.style.width = Math.min(cv, 100) + '%'; 
+
+            if (data.length < 5) {
+                cvBadge.className = "px-4 py-2 rounded-lg bg-slate-100 text-slate-500 font-bold text-sm border border-slate-200 uppercase tracking-wide";
+                cvBadge.innerText = "Datos Insuficientes";
+                cvText.innerText = "Se necesitan más datos para calcular la estabilidad.";
+                cvBar.className = "bg-slate-300 h-2 rounded-full";
+            } else if (cv < 15) {
+                cvBadge.className = "px-4 py-2 rounded-lg bg-emerald-100 text-emerald-700 font-bold text-sm border border-emerald-200 uppercase tracking-wide";
+                cvBadge.innerText = "Alta Estabilidad";
+                cvText.innerHTML = "Precios estandarizados. <strong>Poco margen para negociar</strong>, el mercado ya tiene una tarifa fija.";
+                cvBar.className = "bg-emerald-500 h-2 rounded-full";
+            } else if (cv < 35) {
+                cvBadge.className = "px-4 py-2 rounded-lg bg-yellow-100 text-yellow-700 font-bold text-sm border border-yellow-200 uppercase tracking-wide";
+                cvBadge.innerText = "Variabilidad Media";
+                cvText.innerHTML = "Diferencias notables. Tu experiencia y habilidades blandas <strong>influyen directamente</strong> en el monto final.";
+                cvBar.className = "bg-yellow-500 h-2 rounded-full";
+            } else {
+                cvBadge.className = "px-4 py-2 rounded-lg bg-red-100 text-red-700 font-bold text-sm border border-red-200 uppercase tracking-wide";
+                cvBadge.innerText = "Alta Volatilidad";
+                cvText.innerHTML = "Sin estándar claro. El sueldo depende <strong>casi exclusivamente de tu habilidad para negociar</strong>.";
+                cvBar.className = "bg-red-500 h-2 rounded-full";
+            }
+        }
+
+        // --- RECOMENDACIÓN 7: INSIGHTS GENERATOR ---
+        function generateInsights(data) {
+            const container = document.getElementById('insightsContent');
+            if (!container) return;
+            
+            const salarios = data.map(d => d.salario).filter(v => v > 0);
+            if (salarios.length < 5) {
+                container.innerHTML = '<p class="text-slate-400">Recopilando más datos para generar hallazgos...</p>';
+                return;
+            }
+
+            const median = calculateMedian(salarios);
+            const p25 = calculatePercentile(salarios, 25);
+            const p75 = calculatePercentile(salarios, 75);
+            
+            const gap = p75 - p25;
+            let gapText = "";
+            if (gap > 1000) gapText = `⚠️ <strong>Brecha Salarial Alta:</strong> Diferencia de >${formatMoney(gap)} entre mejores y peores pagados.`;
+            else if (gap < 300) gapText = `✅ <strong>Mercado Uniforme:</strong> Salarios estándar con poca variación.`;
+            else gapText = `ℹ️ <strong>Mercado Saludable:</strong> Escala salarial normal basada en experiencia.`;
+
+            // Insight: Corporativo
+            const sizeStats = groupByAvg(data, 'tamanoEmpresa', 'salario');
+            let sizeInsight = "";
+            if(sizeStats['Grande (>200)'] && sizeStats['Pequeña (1-50)']){
+                const diff = sizeStats['Grande (>200)'] - sizeStats['Pequeña (1-50)'];
+                if(diff > 0) sizeInsight = `🏢 <strong>Efecto Tamaño:</strong> Las grandes empresas pagan un ${Math.round((diff/sizeStats['Pequeña (1-50)'])*100)}% más en promedio.`;
+            }
+
+            container.innerHTML = `
+                <div class="bg-white/10 p-3 rounded-lg border border-white/10 flex items-start gap-3">
+                    <i class="fa-solid fa-scale-unbalanced text-brand-400 mt-1"></i>
+                    <p class="leading-snug">${gapText}</p>
+                </div>
+                ${sizeInsight ? `<div class="bg-white/10 p-3 rounded-lg border border-white/10 flex items-start gap-3">
+                    <i class="fa-solid fa-building text-brand-400 mt-1"></i>
+                    <p class="leading-snug">${sizeInsight}</p>
+                </div>` : ''}
+            `;
+        }
+
+        // --- GRÁFICOS ACTUALIZADOS ---
+        function updateCharts(data) {
+            // 1. ROLES (Floating Bars)
+            const rolesObj = {};
+            data.forEach(d => {
+                if(!d.cargo || d.salario <= 0) return;
+                if(!rolesObj[d.cargo]) rolesObj[d.cargo] = [];
+                rolesObj[d.cargo].push(d.salario);
+            });
+            
+            const rolesChartData = [];
+            Object.keys(rolesObj).forEach(role => {
+                const arr = rolesObj[role];
+                if(arr.length > 1) {
+                    const rP25 = calculatePercentile(arr, 25);
+                    const rP75 = calculatePercentile(arr, 75);
+                    rolesChartData.push({ y: role, x: [rP25, rP75] });
+                }
+            });
+            rolesChartData.sort((a, b) => b.x[1] - a.x[1]); 
+            const topRolesData = rolesChartData.slice(0, 10);
+
+            renderChart('chartRoles', 'bar', {
+                labels: topRolesData.map(d => d.y),
+                datasets: [{
+                    label: 'Rango Salarial (P25 - P75)',
+                    data: topRolesData.map(d => d.x),
+                    backgroundColor: 'rgba(0, 176, 80, 0.6)', 
+                    borderColor: '#00b050',
+                    borderWidth: 1,
+                    borderSkipped: false,
+                    borderRadius: 4,
+                    barPercentage: 0.5
+                }]
+            }, { 
+                indexAxis: 'y',
+                plugins: {
+                    tooltip: { callbacks: { label: (ctx) => `Rango: ${formatMoney(ctx.raw[0])} - ${formatMoney(ctx.raw[1])}` } },
+                    datalabels: { display: true, color: '#64748b', font: { size: 10, weight: 'bold' }, anchor: 'end', align: 'end', formatter: (val) => formatMoney(val[1]) }
+                }
+            });
+
+            // 2. HISTOGRAMA
+            const salaries = data.map(d => d.salario).filter(s => s > 0);
+            const bucketSize = 500;
+            const buckets = {};
+            salaries.forEach(s => {
+                const idx = Math.floor(s / bucketSize);
+                const label = `$${idx * bucketSize} - $${(idx + 1) * bucketSize}`;
+                buckets[label] = (buckets[label] || 0) + 1;
+            });
+            const sortedBuckets = Object.entries(buckets).sort((a, b) => parseInt(a[0].replace('$','')) - parseInt(b[0].replace('$','')));
+
+            renderChart('chartDistribution', 'bar', {
+                labels: sortedBuckets.map(b => b[0]),
+                datasets: [{ label: 'Profesionales', data: sortedBuckets.map(b => b[1]), backgroundColor: '#00b050', borderRadius: 4 }]
+            }, {
+                plugins: { datalabels: { anchor: 'end', align: 'top', color: '#64748b', font: {weight:'bold'} } }
+            });
+
+            // 3. NUEVO: TIPO EMPRESA (Horizontal, Ordenado, Limpio)
+            const typeStats = groupByAvg(data, 'tipoEmpresa', 'salario');
+            // Filtrar vacíos y ordenar
+            const sortedTypes = Object.entries(typeStats)
+                .filter(([key]) => key && key !== 'undefined' && key !== 'N/A')
+                .sort((a, b) => b[1] - a[1]); // Descending salary
+
+            renderChart('chartType', 'bar', {
+                labels: sortedTypes.map(i => i[0]),
+                datasets: [{
+                    label: 'Salario Promedio',
+                    data: sortedTypes.map(i => i[1]),
+                    backgroundColor: '#00b050',
+                    borderRadius: 4,
+                    barPercentage: 0.6
+                }]
+            }, {
+                indexAxis: 'y', // Horizontal is key here
+                plugins: { 
+                    legend: { display: false }, 
+                    datalabels: { 
+                        anchor: 'end', 
+                        align: 'end', 
+                        color: '#64748b', 
+                        font: {weight:'bold'}, 
+                        formatter: (val) => formatMoney(val) 
+                    } 
+                },
+                scales: {
+                    x: { grid: { display: false } }
+                }
+            });
+
+            // 4. NUEVO: TAMAÑO EMPRESA
+            const sizeStats = groupByAvg(data, 'tamanoEmpresa', 'salario');
+            const cleanSizeLabels = Object.keys(sizeStats).map(l => l.split('(')[0].replace('empresa','').trim());
+            renderChart('chartSize', 'bar', {
+                labels: cleanSizeLabels,
+                datasets: [{
+                    label: 'Salario Promedio',
+                    data: Object.values(sizeStats),
+                    backgroundColor: ['#bbf7d0', '#4ade80', '#00b050'],
+                    borderRadius: 6
+                }]
+            }, {
+                plugins: { legend: { display: false }, datalabels: { anchor: 'end', align: 'top', color: '#64748b', font: {weight:'bold'}, formatter: (val) => formatMoney(val) } }
+            });
+
+            // 5. MAPA CALOR
+            const stateStats = countBy(data, 'estado');
+            const sortedStates = Object.entries(stateStats).sort((a, b) => b[1] - a[1]);
+            const maxParticipants = sortedStates[0] ? sortedStates[0][1] : 1;
+            const heatContainer = document.getElementById('heatmapContainer');
+            heatContainer.innerHTML = '';
+            sortedStates.forEach(([state, count]) => {
+                const intensity = count / maxParticipants;
+                let barColorClass = 'bg-brand-200';
+                if(intensity > 0.75) barColorClass = 'bg-brand-600';
+                else if(intensity > 0.5) barColorClass = 'bg-brand-400';
+                else if(intensity > 0.25) barColorClass = 'bg-brand-300';
+                heatContainer.innerHTML += `<div class="flex items-center gap-3 mb-3 text-sm"><div class="w-24 font-bold text-slate-600 truncate text-right">${state}</div><div class="flex-1 h-3 bg-slate-100 rounded-full overflow-hidden"><div class="h-full ${barColorClass} rounded-full" style="width: ${intensity * 100}%"></div></div><div class="w-12 font-mono text-xs text-slate-400">${count}</div></div>`;
+            });
+
+            // 6. GÉNERO
+            const genderStats = countBy(data, 'genero');
+            renderChart('chartGender', 'doughnut', {
+                labels: Object.keys(genderStats),
+                datasets: [{ data: Object.values(genderStats), backgroundColor: ['#00b050', '#86efac', '#1e293b'], borderWidth: 0, hoverOffset: 8 }]
+            }, {
+                cutout: '70%',
+                plugins: { legend: { position: 'bottom', labels: { usePointStyle: true, padding: 20 } }, datalabels: { color: '#fff', font: { weight: 'bold' }, formatter: (value, ctx) => {
+                    let sum = 0; ctx.chart.data.datasets[0].data.map(data => sum += data);
+                    return (value*100 / sum).toFixed(0)+"%";
+                }}}
+            });
+        }
+
+        function renderChart(id, type, data, options = {}) {
+            const ctx = document.getElementById(id).getContext('2d');
+            if (charts[id]) charts[id].destroy();
+            charts[id] = new Chart(ctx, { type, data, options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false }, ...options.plugins }, scales: (type !== 'doughnut') ? { y: { beginAtZero: true, grid: { borderDash: [4, 4], drawBorder: false }, ticks: { callback: (val) => (type === 'bar' && options.indexAxis !== 'y' && val >= 1000) ? '$' + Math.round(val/1000) + 'k' : val, ...options.scales?.y?.ticks }, ...options.scales?.y }, x: { grid: { display: false }, ...options.scales?.x } } : {}, ...options } });
+        }
+
+        function groupByAvg(data, groupKey, valueKey) {
+            const groups = {};
+            data.forEach(item => {
+                const key = item[groupKey] || 'N/A';
+                const val = item[valueKey];
+                if (val > 0) { if (!groups[key]) groups[key] = { sum: 0, count: 0 }; groups[key].sum += val; groups[key].count++; }
+            });
+            const result = {}; for (let key in groups) result[key] = groups[key].sum / groups[key].count; return result;
+        }
+        function countBy(data, key) { return data.reduce((acc, curr) => { const k = curr[key] || 'Otros'; acc[k] = (acc[k] || 0) + 1; return acc; }, {}); }
+        function formatMoney(amount) { return new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD', maximumFractionDigits: 0 }).format(amount); }
+        function animateValue(id, start, end, duration) { if (start === end) return; const obj = document.getElementById(id); const range = end - start; let startTime = null; function animation(currentTime) { if (!startTime) startTime = currentTime; const progress = Math.min((currentTime - startTime) / duration, 1); const value = Math.floor(progress * range + start); obj.innerHTML = value.toLocaleString(); if (progress < 1) window.requestAnimationFrame(animation); } window.requestAnimationFrame(animation); }
+        function showToast(msg, type = 'info') { const toast = document.getElementById('toast'); const icon = document.getElementById('toastIcon'); const txt = document.getElementById('toastMsg'); txt.innerText = msg; toast.classList.remove('translate-y-20', 'opacity-0'); if(type === 'success') icon.className = "fa-solid fa-circle-check text-brand-500"; if(type === 'warning') icon.className = "fa-solid fa-triangle-exclamation text-amber-400"; if(type === 'info') icon.className = "fa-solid fa-circle-info text-blue-400"; setTimeout(() => { toast.classList.add('translate-y-20', 'opacity-0'); }, 3000); }
+    </script>
+</body>
+</html>
